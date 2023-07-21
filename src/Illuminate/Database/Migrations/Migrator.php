@@ -213,7 +213,11 @@ class Migrator
             return $this->pretendToRun($migration, 'up');
         }
 
-        $this->write(Task::class, $name, fn () => $this->runMigration($migration, 'up'));
+        if (! isset($migration->silent) || $migration->silent === false) {
+            $this->write(Task::class, $name, fn () => $this->runMigration($migration, 'up'));
+        } else {
+            $this->runMigration($migration, 'up');
+        }
 
         // Once we have run a migrations class, we will log that it was run in this
         // repository so that we don't try to run it next time we do a migration
